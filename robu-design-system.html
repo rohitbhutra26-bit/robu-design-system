@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROBU Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ─────────────────────────────────────────────── */
+:root,[data-theme="light"]{
+  --color-terminal:237 233 227;--color-card:252 250 247;--color-border:180 174 167;
+  --color-gold:196 81 26;--color-accent:196 81 26;--color-gain:22 163 74;
+  --color-loss:220 38 38;--color-warning:180 83 9;
+  --color-primary:28 25 23;--color-muted:120 113 108;
+  --border-subtle:rgba(28,25,23,0.10);--border-strong:rgba(28,25,23,0.18);
+  --shadow-color:rgba(0,0,0,0.06);
+  --font-sans:'DM Sans',system-ui,sans-serif;
+  --font-serif:'Lora',Georgia,serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --ease-cds:cubic-bezier(0.4,0,0.2,1);
+  --dur-micro:35ms;--dur-fast:60ms;--dur-standard:150ms;--dur-slow:300ms;--dur-spring:450ms;
+  --shadow-sm:0 1px 2px 0 var(--shadow-color);
+  --shadow-md:0 4px 6px -1px var(--shadow-color),0 2px 4px -2px var(--shadow-color);
+}
+[data-theme="dark"]{
+  --color-terminal:31 31 30;--color-card:44 44 42;--color-border:70 68 65;
+  --color-gold:229 110 58;--color-accent:229 110 58;--color-gain:52 211 153;
+  --color-loss:248 113 113;--color-warning:251 191 36;
+  --color-primary:248 248 246;--color-muted:195 194 183;
+  --border-subtle:rgba(226,225,218,0.12);--border-strong:rgba(226,225,218,0.22);
+  --shadow-color:rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:rgb(var(--color-terminal));color:rgb(var(--color-primary));font-family:var(--font-sans);-webkit-font-smoothing:antialiased;line-height:1.5;transition:background var(--dur-standard) var(--ease-cds),color var(--dur-standard) var(--ease-cds)}
+.font-serif{font-family:var(--font-serif)}
+.font-mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* ── Layout ─────────────────────────────────────────────── */
+.page{max-width:960px;margin:0 auto;padding:48px 24px 96px}
+.section{margin-top:64px}
+.section-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:rgb(var(--color-muted));font-weight:600;margin-bottom:20px}
+.section-title{font-size:28px;font-weight:700;color:rgb(var(--color-primary));font-family:var(--font-serif);margin-bottom:6px;letter-spacing:-0.02em}
+.section-desc{font-size:14px;color:rgb(var(--color-muted));margin-bottom:32px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:640px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
+
+/* ── Card ────────────────────────────────────────────────── */
+.card{background:rgb(var(--color-card));border:1px solid var(--border-subtle);border-radius:12px;padding:20px;box-shadow:var(--shadow-sm)}
+
+/* ── Header ─────────────────────────────────────────────── */
+.ds-header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgb(var(--color-card));border-bottom:1px solid var(--border-subtle);position:sticky;top:0;z-index:50;backdrop-filter:blur(12px)}
+.ds-logo{display:flex;align-items:center;gap:10px}
+.ds-logo-r{font-family:var(--font-serif);font-size:22px;font-weight:700;color:rgb(var(--color-gold))}
+.ds-logo-name{font-size:14px;font-weight:700;color:rgb(var(--color-primary));letter-spacing:-0.01em}
+.ds-logo-tag{font-size:11px;color:rgb(var(--color-muted))}
+.theme-toggle{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:9999px;border:1px solid var(--border-subtle);background:transparent;color:rgb(var(--color-muted));font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-sans);transition:all var(--dur-standard) var(--ease-cds)}
+.theme-toggle:hover{color:rgb(var(--color-primary));border-color:var(--border-strong)}
+
+/* ── Color swatches ─────────────────────────────────────── */
+.swatch{border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.swatch-color{height:72px;width:100%}
+.swatch-info{background:rgb(var(--color-card));border:1px solid var(--border-subtle);border-top:none;padding:10px 12px}
+.swatch-name{font-size:11px;font-weight:600;color:rgb(var(--color-primary))}
+.swatch-hex{font-size:10px;color:rgb(var(--color-muted));font-family:var(--font-mono);margin-top:1px}
+.swatch-var{font-size:9px;color:rgb(var(--color-muted));font-family:var(--font-mono);margin-top:2px;opacity:.7}
+
+/* ── Typography ─────────────────────────────────────────── */
+.type-row{padding:16px 0;border-bottom:1px solid var(--border-subtle);display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.type-row:last-child{border-bottom:none}
+.type-meta{min-width:120px;font-size:10px;color:rgb(var(--color-muted));font-family:var(--font-mono)}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:8px;font-size:13px;font-weight:600;font-family:var(--font-sans);cursor:pointer;transition:all var(--dur-micro) var(--ease-cds);border:1px solid transparent;white-space:nowrap}
+.btn:active{transform:scale(0.98)}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:6px}
+.btn-md{padding:8px 16px}
+.btn-lg{padding:10px 20px;font-size:14px}
+.btn-primary{background:rgb(var(--color-gold));color:rgb(var(--color-card));border-color:transparent}
+.btn-primary:hover{opacity:.9}
+.btn-secondary{background:rgb(var(--color-border)/0.4);color:rgb(var(--color-primary));border-color:var(--border-subtle)}
+.btn-secondary:hover{background:rgb(var(--color-border)/0.6)}
+.btn-ghost{background:transparent;color:rgb(var(--color-muted));border-color:transparent}
+.btn-ghost:hover{color:rgb(var(--color-primary));background:rgb(var(--color-border)/0.3)}
+.btn-danger{background:rgb(var(--color-loss)/0.1);color:rgb(var(--color-loss));border-color:rgb(var(--color-loss)/0.3)}
+.btn-pill{border-radius:9999px}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+
+/* ── Chips ───────────────────────────────────────────────── */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:9999px;font-size:11px;font-weight:600}
+.chip-neutral{background:rgb(var(--color-border)/0.5);color:rgb(var(--color-primary)/0.8);border:1px solid var(--border-subtle)}
+.chip-accent{background:rgb(var(--color-gold)/0.1);color:rgb(var(--color-gold));border:1px solid rgb(var(--color-gold)/0.25)}
+.chip-gain{background:rgb(var(--color-gain)/0.1);color:rgb(var(--color-gain));border:1px solid rgb(var(--color-gain)/0.25)}
+.chip-loss{background:rgb(var(--color-loss)/0.1);color:rgb(var(--color-loss));border:1px solid rgb(var(--color-loss)/0.25)}
+.chip-warning{background:rgb(var(--color-warning)/0.1);color:rgb(var(--color-warning));border:1px solid rgb(var(--color-warning)/0.25)}
+
+/* ── Stat card ───────────────────────────────────────────── */
+.stat-card{background:rgb(var(--color-card));border:1px solid var(--border-subtle);border-radius:12px;padding:16px;transition:border-color var(--dur-micro) var(--ease-cds),box-shadow var(--dur-standard) var(--ease-cds),transform var(--dur-spring) var(--ease-cds)}
+.stat-card:hover{border-color:rgb(var(--color-gold)/0.35);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:rgb(var(--color-muted));font-weight:600;margin-bottom:4px}
+.stat-value{font-size:20px;font-weight:700;font-family:var(--font-mono);color:rgb(var(--color-primary))}
+.stat-sub{font-size:11px;color:rgb(var(--color-muted));margin-top:3px}
+
+/* ── Input ───────────────────────────────────────────────── */
+.input{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-subtle);background:rgb(var(--color-card));color:rgb(var(--color-primary));font-size:14px;font-family:var(--font-sans);outline:none;transition:border-color var(--dur-micro) var(--ease-cds)}
+.input:focus{border-color:rgb(var(--color-gold)/0.6);box-shadow:0 0 0 3px rgb(var(--color-gold)/0.08)}
+.input::placeholder{color:rgb(var(--color-muted)/0.6)}
+
+/* ── Nav item ────────────────────────────────────────────── */
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;cursor:pointer;transition:background var(--dur-micro) var(--ease-cds);border:1px solid transparent}
+.nav-item.active{background:rgb(var(--color-card));border-color:var(--border-subtle);box-shadow:var(--shadow-sm)}
+.nav-item:not(.active):hover{background:rgb(var(--color-card)/0.6)}
+.nav-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.nav-icon.active{background:rgb(var(--color-gold)/0.1);border:1px solid rgb(var(--color-gold)/0.2)}
+.nav-icon.inactive{background:rgb(var(--color-border)/0.4)}
+
+/* ── Skeleton ────────────────────────────────────────────── */
+.skeleton{position:relative;overflow:hidden;background:rgb(var(--color-border)/0.4);border-radius:4px}
+.skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgb(var(--color-primary)/0.07) 50%,transparent 100%);animation:shimmer 1.5s var(--ease-cds) infinite}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+
+/* ── Motion demo ─────────────────────────────────────────── */
+.motion-pill{padding:7px 16px;border-radius:8px;background:rgb(var(--color-gold));color:rgb(var(--color-card));font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:var(--font-sans);display:inline-block}
+.motion-box{width:48px;height:48px;background:rgb(var(--color-gold));border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgb(var(--color-card));font-weight:700;cursor:pointer;transition:transform var(--dur-spring) var(--ease-cds)}
+.motion-box:active{transform:scale(0.9)}
+.easing-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border-subtle)}
+.easing-row:last-child{border-bottom:none}
+.easing-track{flex:1;height:4px;background:rgb(var(--color-border)/0.4);border-radius:2px;position:relative;overflow:hidden}
+.easing-ball{position:absolute;left:0;top:50%;transform:translateY(-50%);width:14px;height:14px;background:rgb(var(--color-gold));border-radius:50%;margin-left:-7px}
+
+/* ── Usage block ─────────────────────────────────────────── */
+.code-block{background:rgb(var(--color-terminal));border:1px solid var(--border-subtle);border-radius:8px;padding:16px 20px;font-family:var(--font-mono);font-size:12px;color:rgb(var(--color-muted));overflow-x:auto;margin-top:12px}
+.code-block .token-var{color:rgb(var(--color-gold))}
+.code-block .token-val{color:rgb(var(--color-gain))}
+.code-block .token-cmt{color:rgb(var(--color-muted)/0.55)}
+
+/* ── Radius demo ─────────────────────────────────────────── */
+.radius-box{background:rgb(var(--color-gold)/0.15);border:2px solid rgb(var(--color-gold)/0.4);width:64px;height:64px;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgb(var(--color-gold));font-weight:700;font-family:var(--font-mono)}
+.radius-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+</style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────── -->
+<div class="ds-header">
+  <div class="ds-logo">
+    <span class="ds-logo-r">R</span>
+    <div>
+      <div class="ds-logo-name">ROBU Design System</div>
+      <div class="ds-logo-tag">v1.0 — Claude-inspired, India-built</div>
+    </div>
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()">☀ Light / ◑ Dark</button>
+</div>
+
+<!-- ── Page ────────────────────────────────────────────── -->
+<div class="page">
+
+  <!-- Hero -->
+  <div style="padding-top:48px">
+    <p class="section-label">Design System</p>
+    <h1 class="section-title" style="font-size:42px">ROBU DS</h1>
+    <p class="section-desc" style="max-width:520px;font-size:15px">
+      A warm, editorial design language built for Indian financial apps.
+      Inspired by Claude's design system — cream surfaces, terracotta accents,
+      serif headings, and spring-physics motion.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+      <span class="chip chip-accent">Tailwind v3</span>
+      <span class="chip chip-neutral">Next.js</span>
+      <span class="chip chip-neutral">React</span>
+      <span class="chip chip-gain">Light + Dark</span>
+    </div>
+  </div>
+
+  <!-- ── 1. COLORS ─────────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">01 — Foundation</p>
+    <h2 class="section-title">Color Tokens</h2>
+    <p class="section-desc">RGB triplets so Tailwind opacity modifiers (bg-gold/20) work out of the box.</p>
+
+    <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgb(var(--color-muted));margin-bottom:16px;text-transform:uppercase">Surfaces</p>
+    <div class="grid-3" style="margin-bottom:24px">
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-terminal))"></div>
+        <div class="swatch-info"><div class="swatch-name">Terminal / Page BG</div><div class="swatch-hex" id="hex-terminal"></div><div class="swatch-var">--color-terminal</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-card))"></div>
+        <div class="swatch-info"><div class="swatch-name">Card / Surface</div><div class="swatch-hex" id="hex-card"></div><div class="swatch-var">--color-card</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-border));border:1px solid var(--border-subtle)"></div>
+        <div class="swatch-info"><div class="swatch-name">Border / Chip Fill</div><div class="swatch-hex" id="hex-border"></div><div class="swatch-var">--color-border</div></div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgb(var(--color-muted));margin-bottom:16px;text-transform:uppercase">Brand & Semantic</p>
+    <div class="grid-4">
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-gold))"></div>
+        <div class="swatch-info"><div class="swatch-name">Gold / Accent</div><div class="swatch-hex" id="hex-gold"></div><div class="swatch-var">--color-gold</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-gain))"></div>
+        <div class="swatch-info"><div class="swatch-name">Gain / Positive</div><div class="swatch-hex" id="hex-gain"></div><div class="swatch-var">--color-gain</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-loss))"></div>
+        <div class="swatch-info"><div class="swatch-name">Loss / Negative</div><div class="swatch-hex" id="hex-loss"></div><div class="swatch-var">--color-loss</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-warning))"></div>
+        <div class="swatch-info"><div class="swatch-name">Warning / Caution</div><div class="swatch-hex" id="hex-warning"></div><div class="swatch-var">--color-warning</div></div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgb(var(--color-muted));margin-bottom:16px;margin-top:24px;text-transform:uppercase">Text</p>
+    <div class="grid-2">
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-primary))"></div>
+        <div class="swatch-info"><div class="swatch-name">Primary Text</div><div class="swatch-hex" id="hex-primary"></div><div class="swatch-var">--color-primary</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgb(var(--color-muted))"></div>
+        <div class="swatch-info"><div class="swatch-name">Muted / Secondary</div><div class="swatch-hex" id="hex-muted"></div><div class="swatch-var">--color-muted</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. TYPOGRAPHY ─────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">02 — Foundation</p>
+    <h2 class="section-title">Typography</h2>
+    <p class="section-desc">Three-font stack: serif for editorial weight, sans for UI, mono for data.</p>
+
+    <div class="card">
+      <div class="type-row">
+        <div class="type-meta">Serif 700<br>Heading / Logo</div>
+        <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:rgb(var(--color-primary));letter-spacing:-0.02em">Robu Terminal</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">Serif 400 italic<br>Editorial accent</div>
+        <div style="font-family:var(--font-serif);font-size:22px;font-style:italic;color:rgb(var(--color-gold))">cheap, fair, expensive</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">Sans 700<br>UI Heading</div>
+        <div style="font-size:20px;font-weight:700;color:rgb(var(--color-primary))">Valuation Analysis</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">Sans 400<br>Body copy</div>
+        <div style="font-size:15px;color:rgb(var(--color-muted));max-width:420px;line-height:1.6">Search any Indian stock and instantly find out if it's cheap, fair value, or expensive based on your assumptions.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">Mono 600<br>Numbers / Data</div>
+        <div style="font-family:var(--font-mono);font-size:24px;font-weight:600;color:rgb(var(--color-primary))">₹4,234.50 &nbsp;<span style="color:rgb(var(--color-gain))">+2.34%</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">Mono 400 10px<br>Labels / Caps</div>
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgb(var(--color-muted));font-weight:600">MARKET CAP &nbsp;·&nbsp; P/E RATIO &nbsp;·&nbsp; ROE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. BUTTONS ───────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">03 — Components</p>
+    <h2 class="section-title">Buttons</h2>
+    <p class="section-desc">Press scales to 0.98 with spring easing. Each has micro transitions for instant feel.</p>
+
+    <div class="card">
+      <div class="btn-row">
+        <button class="btn btn-primary btn-md">Run Valuation</button>
+        <button class="btn btn-primary btn-md btn-pill">Run Valuation</button>
+        <button class="btn btn-primary btn-sm">Save</button>
+        <button class="btn btn-primary btn-lg">Get Started →</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary btn-md">Watchlist</button>
+        <button class="btn btn-secondary btn-md btn-pill">Portfolio</button>
+        <button class="btn btn-secondary btn-sm">Reset</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-md">Cancel</button>
+        <button class="btn btn-ghost btn-md">Learn more →</button>
+        <button class="btn btn-danger btn-sm">Delete</button>
+      </div>
+      <div class="btn-row" style="margin-bottom:0">
+        <!-- Year toggle group -->
+        <div style="display:flex;gap:6px;background:rgb(var(--color-terminal));padding:4px;border-radius:10px">
+          <button class="btn btn-sm" style="background:rgb(var(--color-gold));color:rgb(var(--color-card));border:none;min-width:40px">3Y</button>
+          <button class="btn btn-sm btn-ghost" style="color:rgb(var(--color-primary)/0.7);min-width:40px">5Y</button>
+          <button class="btn btn-sm btn-ghost" style="color:rgb(var(--color-primary)/0.7);min-width:40px">7Y</button>
+          <button class="btn btn-sm btn-ghost" style="color:rgb(var(--color-primary)/0.7);min-width:40px">10Y</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. CHIPS / BADGES ─────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">04 — Components</p>
+    <h2 class="section-title">Chips &amp; Badges</h2>
+    <p class="section-desc">Semantic color pairs: each chip has a 10% tint background with matching border and text.</p>
+
+    <div class="card" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <span class="chip chip-neutral">NSE</span>
+      <span class="chip chip-neutral">Finance</span>
+      <span class="chip chip-accent">⚡ Analyst Consensus</span>
+      <span class="chip chip-accent">Terracotta</span>
+      <span class="chip chip-gain">▲ +5.3%</span>
+      <span class="chip chip-gain">Low Leverage</span>
+      <span class="chip chip-loss">▼ −2.1%</span>
+      <span class="chip chip-loss">High Risk</span>
+      <span class="chip chip-warning">⚠ Data Gap</span>
+      <span class="chip chip-warning">Moderate</span>
+    </div>
+  </div>
+
+  <!-- ── 5. CARDS ──────────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">05 — Components</p>
+    <h2 class="section-title">Cards &amp; Stat Tiles</h2>
+    <p class="section-desc">Hover: border brightens to terracotta, shadow deepens, 1px lift. Spring easing on transform.</p>
+
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-label">Market Cap</div>
+        <div class="stat-value" style="color:rgb(var(--color-primary))">₹20,927 Cr</div>
+        <div class="stat-sub">Large cap</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">P/E Ratio</div>
+        <div class="stat-value" style="color:rgb(var(--color-gold))">57.2x</div>
+        <div class="stat-sub">Sector: 38.4x</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ROE</div>
+        <div class="stat-value" style="color:rgb(var(--color-gain))">21.4%</div>
+        <div class="stat-sub">Excellent ▲</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Debt / Equity</div>
+        <div class="stat-value" style="color:rgb(var(--color-gain))">0.12x</div>
+        <div class="stat-sub">Low leverage</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px">
+      <!-- Feature card -->
+      <div class="stat-card" style="padding:20px">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgb(var(--color-gold)/0.1);border:1px solid rgb(var(--color-gold)/0.2);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px">📊</div>
+        <div style="font-size:14px;font-weight:700;color:rgb(var(--color-primary));margin-bottom:6px">Valuation Engine</div>
+        <div style="font-size:12px;color:rgb(var(--color-muted));line-height:1.5">Four models: DCF, Graham Number, P/E target, and EV/EBITDA. Pick your favourite.</div>
+        <div style="margin-top:14px;font-size:12px;font-weight:700;color:rgb(var(--color-gold));display:flex;align-items:center;gap:4px">Run valuation →</div>
+      </div>
+      <!-- Metric chip cluster card -->
+      <div class="stat-card" style="padding:20px">
+        <div style="font-size:12px;font-weight:700;color:rgb(var(--color-primary));margin-bottom:14px;display:flex;align-items:center;gap:8px">
+          KAYNES TECHNOLOGY
+          <span class="chip chip-accent" style="font-size:9px;padding:2px 8px">NSE</span>
+        </div>
+        <div style="font-size:28px;font-weight:700;font-family:var(--font-mono);color:rgb(var(--color-primary))">₹4,234 <span style="font-size:14px;color:rgb(var(--color-gain));font-weight:600">+2.3%</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:14px">
+          <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgb(var(--color-border)/0.5);border:1px solid var(--border-subtle);border-radius:8px">
+            <span style="font-size:10px;color:rgb(var(--color-muted));font-weight:600">P/E</span>
+            <span style="font-size:11px;font-weight:700;font-family:var(--font-mono);color:rgb(var(--color-gold))">57.2x</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgb(var(--color-border)/0.5);border:1px solid var(--border-subtle);border-radius:8px">
+            <span style="font-size:10px;color:rgb(var(--color-muted));font-weight:600">ROE</span>
+            <span style="font-size:11px;font-weight:700;font-family:var(--font-mono);color:rgb(var(--color-gain))">21.4%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgb(var(--color-border)/0.5);border:1px solid var(--border-subtle);border-radius:8px">
+            <span style="font-size:10px;color:rgb(var(--color-muted));font-weight:600">D/E</span>
+            <span style="font-size:11px;font-weight:700;font-family:var(--font-mono);color:rgb(var(--color-gain))">0.12x</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 6. NAVIGATION ─────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">06 — Components</p>
+    <h2 class="section-title">Navigation</h2>
+    <p class="section-desc">Sidebar nav with icon box + label + description. Active state: white card + terracotta icon.</p>
+
+    <div class="grid-2">
+      <!-- Sidebar -->
+      <div class="card" style="padding:12px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgb(var(--color-muted)/0.8);padding:4px 8px 8px">Analyse</div>
+        <div class="nav-item active">
+          <div class="nav-icon active">📊</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:rgb(var(--color-primary))">Valuation</div>
+            <div style="font-size:10px;color:rgb(var(--color-muted)/0.75);margin-top:1px">What's it worth?</div>
+          </div>
+        </div>
+        <div class="nav-item" style="margin-top:2px">
+          <div class="nav-icon inactive">📋</div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:rgb(var(--color-muted))">Financials</div>
+            <div style="font-size:10px;color:rgb(var(--color-muted)/0.75);margin-top:1px">Revenue, profit & history</div>
+          </div>
+        </div>
+        <div class="nav-item" style="margin-top:2px">
+          <div class="nav-icon inactive">🔖</div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:rgb(var(--color-muted))">Watchlist</div>
+            <div style="font-size:10px;color:rgb(var(--color-muted)/0.75);margin-top:1px">Saved stocks</div>
+          </div>
+        </div>
+      </div>
+      <!-- Sub-tabs + inputs -->
+      <div class="card">
+        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--border-subtle)">
+          <button class="btn btn-sm btn-pill" style="background:rgb(var(--color-gold));color:rgb(var(--color-card));border:none;flex-shrink:0">Overview</button>
+          <button class="btn btn-sm btn-pill" style="background:rgb(var(--color-border)/0.5);color:rgb(var(--color-primary)/0.7);border:none;flex-shrink:0">Valuation</button>
+          <button class="btn btn-sm btn-pill" style="background:rgb(var(--color-border)/0.5);color:rgb(var(--color-primary)/0.7);border:none;flex-shrink:0">AI</button>
+          <button class="btn btn-sm btn-pill" style="background:rgb(var(--color-border)/0.5);color:rgb(var(--color-primary)/0.7);border:none;flex-shrink:0">Data</button>
+        </div>
+        <input class="input" placeholder="Search Indian stocks…" style="margin-bottom:10px">
+        <input class="input" placeholder="₹0.00" type="number">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 7. RADIUS ─────────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">07 — Foundation</p>
+    <h2 class="section-title">Border Radius</h2>
+    <p class="section-desc">xs→full. Named --radius-* and Tailwind classes rounded-cds-*</p>
+
+    <div class="card">
+      <div class="radius-row">
+        <div style="text-align:center"><div class="radius-box" style="border-radius:2px">xs<br>2px</div></div>
+        <div style="text-align:center"><div class="radius-box" style="border-radius:4px">sm<br>4px</div></div>
+        <div style="text-align:center"><div class="radius-box" style="border-radius:6px">md<br>6px</div></div>
+        <div style="text-align:center"><div class="radius-box" style="border-radius:8px">lg<br>8px</div></div>
+        <div style="text-align:center"><div class="radius-box" style="border-radius:12px">xl<br>12px</div></div>
+        <div style="text-align:center"><div class="radius-box" style="border-radius:16px">2xl<br>16px</div></div>
+        <div style="text-align:center"><div class="radius-box" style="border-radius:9999px;width:80px">full<br>pill</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 8. MOTION ─────────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">08 — Motion</p>
+    <h2 class="section-title">Animation System</h2>
+    <p class="section-desc">Micro 35ms for instant feel. Spring 450ms for transforms. Click the box to feel it.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgb(var(--color-muted));margin-bottom:12px">Durations</div>
+        <div class="easing-row"><div style="min-width:90px;font-size:11px;font-family:var(--font-mono);color:rgb(var(--color-muted))">micro 35ms</div><div class="easing-track"><div class="easing-ball" id="b35"></div></div></div>
+        <div class="easing-row"><div style="min-width:90px;font-size:11px;font-family:var(--font-mono);color:rgb(var(--color-muted))">fast 60ms</div><div class="easing-track"><div class="easing-ball" id="b60"></div></div></div>
+        <div class="easing-row"><div style="min-width:90px;font-size:11px;font-family:var(--font-mono);color:rgb(var(--color-muted))">standard 150ms</div><div class="easing-track"><div class="easing-ball" id="b150"></div></div></div>
+        <div class="easing-row"><div style="min-width:90px;font-size:11px;font-family:var(--font-mono);color:rgb(var(--color-muted))">slow 300ms</div><div class="easing-track"><div class="easing-ball" id="b300"></div></div></div>
+        <div class="easing-row" style="border:none"><div style="min-width:90px;font-size:11px;font-family:var(--font-mono);color:rgb(var(--color-muted))">spring 450ms</div><div class="easing-track"><div class="easing-ball" id="b450"></div></div></div>
+        <button onclick="runDurationDemo()" style="margin-top:14px" class="btn btn-secondary btn-sm btn-pill">▶ Play all</button>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgb(var(--color-muted))">Spring press (click me)</div>
+        <div class="motion-box" style="font-size:20px">R</div>
+        <div style="font-size:11px;color:rgb(var(--color-muted));text-align:center">scale(0.9) on :active<br>spring easing snap-back</div>
+        <div style="margin-top:4px">
+          <div style="background:rgb(var(--color-terminal));border-radius:12px;padding:10px 16px;display:flex;gap:8px;align-items:center">
+            <div class="skeleton" style="width:36px;height:36px;border-radius:8px;flex-shrink:0"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+              <div class="skeleton" style="height:10px;width:80px;border-radius:4px"></div>
+              <div class="skeleton" style="height:8px;width:56px;border-radius:4px"></div>
+            </div>
+          </div>
+          <div style="font-size:10px;color:rgb(var(--color-muted));text-align:center;margin-top:8px">Skeleton shimmer loader</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 9. USAGE ──────────────────────────────────────── -->
+  <div class="section">
+    <p class="section-label">09 — How to use</p>
+    <h2 class="section-title">Drop it in 3 steps</h2>
+    <p class="section-desc">Works with any framework. Standalone CSS for plain HTML, Tailwind config for Next.js/Vite.</p>
+
+    <div class="grid-2" style="gap:20px">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:rgb(var(--color-primary));margin-bottom:6px">① Import the token file</div>
+        <div class="code-block">
+<span class="token-cmt">/* In globals.css or main.css */</span>
+<span class="token-var">@import</span> <span class="token-val">'./robu-tokens.css'</span>;
+
+<span class="token-cmt">/* Or in Next.js layout.tsx */</span>
+<span class="token-var">import</span> <span class="token-val">'./robu-tokens.css'</span>;
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:rgb(var(--color-primary));margin-bottom:6px">② Merge Tailwind config</div>
+        <div class="code-block">
+<span class="token-cmt">// tailwind.config.js</span>
+<span class="token-var">const</span> robu = <span class="token-val">require</span>(<span class="token-val">'./tailwind.robu.js'</span>);
+module.exports = {
+  theme: { extend: robu }
+};
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:rgb(var(--color-primary));margin-bottom:6px">③ Switch theme with data-attr</div>
+        <div class="code-block">
+<span class="token-cmt">// Apply dark theme on &lt;html&gt;</span>
+document.documentElement
+  .setAttribute(<span class="token-val">'data-theme'</span>, <span class="token-val">'dark'</span>);
+
+<span class="token-cmt">// Back to light</span>
+document.documentElement
+  .setAttribute(<span class="token-val">'data-theme'</span>, <span class="token-val">'light'</span>);
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:rgb(var(--color-primary));margin-bottom:6px">④ Use tokens in any CSS</div>
+        <div class="code-block">
+<span class="token-cmt">/* Tailwind classes */</span>
+<span class="token-var">bg-terminal</span>  bg-card  text-primary
+text-muted   bg-gold  text-gain
+
+<span class="token-cmt">/* Vanilla CSS */</span>
+<span class="token-var">background</span>: rgb(<span class="token-val">var(--color-card)</span>);
+<span class="token-var">color</span>: rgb(<span class="token-val">var(--color-gold)</span> / 0.8);
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div style="margin-top:80px;padding-top:24px;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap">
+    <div style="font-family:var(--font-serif);font-size:16px;font-weight:700;color:rgb(var(--color-gold))">ROBU DS v1.0</div>
+    <div style="font-size:12px;color:rgb(var(--color-muted))">rohitbhutra26-bit · Claude-inspired · MIT</div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+function toggleTheme(){
+  var html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme')==='dark' ? 'light' : 'dark');
+  updateSwatches();
+}
+
+function getComputedRGB(varName){
+  var s = getComputedStyle(document.documentElement);
+  var val = s.getPropertyValue(varName).trim();
+  if(!val) return '#888';
+  var parts = val.split(' ').map(Number);
+  if(parts.length===3){
+    return '#'+parts.map(function(n){return Math.round(n).toString(16).padStart(2,'0')}).join('');
+  }
+  return '#888';
+}
+
+function updateSwatches(){
+  var map = {
+    'hex-terminal':'--color-terminal','hex-card':'--color-card','hex-border':'--color-border',
+    'hex-gold':'--color-gold','hex-gain':'--color-gain','hex-loss':'--color-loss',
+    'hex-warning':'--color-warning','hex-primary':'--color-primary','hex-muted':'--color-muted'
+  };
+  Object.keys(map).forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.textContent = getComputedRGB(map[id]).toUpperCase();
+  });
+}
+
+function runDurationDemo(){
+  var items = [{id:'b35',dur:35},{id:'b60',dur:60},{id:'b150',dur:150},{id:'b300',dur:300},{id:'b450',dur:450}];
+  items.forEach(function(item){
+    var el = document.getElementById(item.id);
+    var track = el.parentElement;
+    var w = track.offsetWidth - 14;
+    el.style.transition = 'left '+item.dur+'ms cubic-bezier(0.4,0,0.2,1)';
+    el.style.left = w+'px';
+    setTimeout(function(){
+      el.style.transition = 'left '+item.dur+'ms cubic-bezier(0.4,0,0.2,1)';
+      el.style.left = '0px';
+    }, item.dur + 200);
+  });
+}
+
+updateSwatches();
+</script>
+</body>
+</html>
